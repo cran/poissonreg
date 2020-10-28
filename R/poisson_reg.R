@@ -7,8 +7,8 @@
 #' \itemize{
 #'   \item \code{penalty}: The total amount of regularization
 #'  in the model. Note that this must be zero for some engines.
-#'   \item \code{mixture}: The proportion of L1 regularization in
-#'  the model. Note that this will be ignored for some engines.
+#'   \item \code{mixture}: The mixture amounts of different types of
+#'   regularization (see below). Note that this will be ignored for some engines.
 #' }
 #' These arguments are converted to their specific names at the
 #'  time that the model is fit. Other options and argument can be
@@ -20,10 +20,10 @@
 #'  The only possible value for this model is "regression".
 #' @param penalty A non-negative number representing the total
 #'  amount of regularization (`glmnet` only).
-#' @param mixture A number between zero and one (inclusive) that
-#'  represents the proportion of regularization that is used for the
-#'  L2 penalty (i.e. weight decay, or ridge regression) versus L1
-#'  (the lasso) (`glmnet` only).
+#' @param mixture A number between zero and one (inclusive) that is the
+#'  proportion of L1 regularization (i.e. lasso) in the model. When
+#'  `mixture = 1`, it is a pure lasso model while `mixture = 0` indicates that
+#'  ridge regression is being used. (`glmnet` and `spark` only).
 #' @details
 #' The data given to the function are not saved and are only used
 #'  to determine the _mode_ of the model. For `poisson_reg()`, the
@@ -332,3 +332,42 @@ predict_raw._fishnet <- function(object, new_data, opts = list(), ...)  {
   opts$s <- object$spec$args$penalty
   parsnip::predict_raw.model_fit(object, new_data = new_data, opts = opts, ...)
 }
+
+#' @importFrom dplyr full_join as_tibble arrange
+#' @importFrom tidyr gather
+#' @export
+#' @rdname predict_raw._fishnet
+#' @param penalty A numeric vector of penalty values.
+multi_predict._fishnet <-
+  function(object, new_data, type = NULL, penalty = NULL, ...) {
+    if (any(names(enquos(...)) == "newdata"))
+      rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+
+    dots <- list(...)
+
+    object$spec <- eval_args(object$spec)
+
+    if (is.null(penalty)) {
+      # See discussion in https://github.com/tidymodels/parsnip/issues/195
+      if (!is.null(object$spec$args$penalty)) {
+        penalty <- object$spec$args$penalty
+      } else {
+        penalty <- object$fit$lambda
+      }
+    }
+
+    pred <- predict._fishnet(object, new_data = new_data, type = "raw",
+                             opts = dots, penalty = penalty, multi = TRUE)
+    param_key <- tibble(group = colnames(pred), penalty = penalty)
+    pred <- as_tibble(pred)
+    pred$.row <- 1:nrow(pred)
+    pred <- gather(pred, group, .pred, -.row)
+    pred <- full_join(param_key, pred, by = "group")
+    pred$group <- NULL
+    pred <- arrange(pred, .row, penalty)
+    .row <- pred$.row
+    pred$.row <- NULL
+    pred <- split(pred, .row)
+    names(pred) <- NULL
+    tibble(.pred = pred)
+  }

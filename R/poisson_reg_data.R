@@ -13,6 +13,7 @@ make_poisson_reg <- function() {
 
   parsnip::set_model_engine("poisson_reg", "regression", "glm")
   parsnip::set_dependency("poisson_reg", "glm", "stats")
+  parsnip::set_dependency("poisson_reg", "glm", "poissonreg")
 
   parsnip::set_fit(
     model = "poisson_reg",
@@ -23,6 +24,18 @@ make_poisson_reg <- function() {
       protect = c("formula", "data", "weights"),
       func = c(pkg = "stats", fun = "glm"),
       defaults = list(family = expr(stats::poisson))
+    )
+  )
+
+  parsnip::set_encoding(
+    model = "poisson_reg",
+    eng = "glm",
+    mode = "regression",
+    options = list(
+      predictor_indicators = "none",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 
@@ -61,6 +74,7 @@ make_poisson_reg <- function() {
 
   parsnip::set_model_engine("poisson_reg", "regression", "hurdle")
   parsnip::set_dependency("poisson_reg", "hurdle", "pscl")
+  parsnip::set_dependency("poisson_reg", "hurdle", "poissonreg")
 
   parsnip::set_fit(
     model = "poisson_reg",
@@ -71,6 +85,18 @@ make_poisson_reg <- function() {
       protect = c("formula", "data", "weights"),
       func = c(pkg = "pscl", fun = "hurdle"),
       defaults = list()
+    )
+  )
+
+  parsnip::set_encoding(
+    model = "poisson_reg",
+    eng = "hurdle",
+    mode = "regression",
+    options = list(
+      predictor_indicators = "none",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 
@@ -108,6 +134,7 @@ make_poisson_reg <- function() {
 
   parsnip::set_model_engine("poisson_reg", "regression", "zeroinfl")
   parsnip::set_dependency("poisson_reg", "zeroinfl", "pscl")
+  parsnip::set_dependency("poisson_reg", "zeroinfl", "poissonreg")
 
   parsnip::set_fit(
     model = "poisson_reg",
@@ -118,6 +145,18 @@ make_poisson_reg <- function() {
       protect = c("formula", "data", "weights"),
       func = c(pkg = "pscl", fun = "zeroinfl"),
       defaults = list()
+    )
+  )
+
+  parsnip::set_encoding(
+    model = "poisson_reg",
+    eng = "zeroinfl",
+    mode = "regression",
+    options = list(
+      predictor_indicators = "none",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 
@@ -155,6 +194,7 @@ make_poisson_reg <- function() {
 
   parsnip::set_model_engine("poisson_reg", "regression", "glmnet")
   parsnip::set_dependency("poisson_reg", "glmnet", "glmnet")
+  parsnip::set_dependency("poisson_reg", "glmnet", "poissonreg")
 
   parsnip::set_model_arg(
     model = "poisson_reg",
@@ -164,6 +204,7 @@ make_poisson_reg <- function() {
     func = list(pkg = "dials", fun = "penalty"),
     has_submodel = TRUE
   )
+
 
   parsnip::set_model_arg(
     model = "poisson_reg",
@@ -186,6 +227,18 @@ make_poisson_reg <- function() {
     )
   )
 
+  parsnip::set_encoding(
+    model = "poisson_reg",
+    eng = "glmnet",
+    mode = "regression",
+    options = list(
+      predictor_indicators = "traditional",
+      compute_intercept = TRUE,
+      remove_intercept = TRUE,
+      allow_sparse_x = TRUE
+    )
+  )
+
   parsnip::set_pred(
     model = "poisson_reg",
     eng = "glmnet",
@@ -198,7 +251,7 @@ make_poisson_reg <- function() {
       args =
         list(
           object = expr(object$fit),
-          newx = expr(as.matrix(new_data)),
+          newx = expr(as.matrix(new_data[, rownames(object$fit$beta)])),
           type = "response",
           s = expr(object$spec$args$penalty)
         )
@@ -216,7 +269,7 @@ make_poisson_reg <- function() {
       func = c(fun = "predict"),
       args =
         list(object = expr(object$fit),
-             newx = expr(as.matrix(new_data)))
+             newx = expr(as.matrix(new_data[, rownames(object$fit$beta)])))
     )
   )
 
@@ -224,6 +277,7 @@ make_poisson_reg <- function() {
 
   parsnip::set_model_engine("poisson_reg", "regression", "stan")
   parsnip::set_dependency("poisson_reg", "stan", "rstanarm")
+  parsnip::set_dependency("poisson_reg", "stan", "poissonreg")
 
   parsnip::set_fit(
     model = "poisson_reg",
@@ -234,6 +288,18 @@ make_poisson_reg <- function() {
       protect = c("formula", "data", "weights"),
       func = c(pkg = "rstanarm", fun = "stan_glm"),
       defaults = list(family = expr(stats::poisson))
+    )
+  )
+
+  parsnip::set_encoding(
+    model = "poisson_reg",
+    eng = "stan",
+    mode = "regression",
+    options = list(
+      predictor_indicators = "none",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 
