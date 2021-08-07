@@ -1,3 +1,9 @@
+# poissonreg 0.1.1
+
+* A default engine of `glm` was added for `poisson_reg()`. 
+
+* Added `tidy()` methods for `pscl::hurdle()` and `pscl::zeroinfl()`.
+
 # poissonreg 0.1.0
 
 * Work-around for a `glmnet` bug where different column order will silently produce incorrect predictions. 
