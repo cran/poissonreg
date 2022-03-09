@@ -1,3 +1,7 @@
+# poissonreg 0.2.0
+
+* Model definition functions (e.g. `poisson_reg()`) were moved to the parsnip package.
+
 # poissonreg 0.1.1
 
 * A default engine of `glm` was added for `poisson_reg()`. 
