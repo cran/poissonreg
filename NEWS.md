@@ -1,3 +1,7 @@
+# poissonreg 1.0.0
+
+* Changes for using case weights with parsnip 1.0.0.
+
 # poissonreg 0.2.0
 
 * Model definition functions (e.g. `poisson_reg()`) were moved to the parsnip package.
