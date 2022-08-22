@@ -1,6 +1,6 @@
 Package: poissonreg
 Title: Model Wrappers for Poisson Regression
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(
     person("Max", "Kuhn", , "max@rstudio.com", role = c("aut"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -24,12 +24,12 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 NeedsCompilation: no
-Packaged: 2022-06-14 10:52:01 UTC; hannah
+Packaged: 2022-08-22 16:06:49 UTC; hannah
 Author: Max Kuhn [aut] (<https://orcid.org/0000-0003-2402-136X>),
   Hannah Frick [aut, cre] (<https://orcid.org/0000-0002-6049-5258>),
   RStudio [cph, fnd]
 Maintainer: Hannah Frick <hannah@rstudio.com>
 Repository: CRAN
-Date/Publication: 2022-06-15 08:20:02 UTC
+Date/Publication: 2022-08-22 16:30:02 UTC

@@ -1,3 +1,7 @@
+# poissonreg 1.0.1
+
+* Update to the .Rd files to generate valid HTML5
+
 # poissonreg 1.0.0
 
 * Changes for using case weights with parsnip 1.0.0.
